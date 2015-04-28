@@ -60,11 +60,47 @@ app.get('/findnoas', function(request, response){
   					} else {
   					response.send({});
   				}
-  			})
+  			});
   		});
   	}
 });
 
+
+app.get('/', function(request, response) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");
+    response.set('Content-Type', 'text/html');
+    var indexPage = "";
+
+    db.collection('restaurants', function (error, coll) {
+      coll.find().toArray(
+          function(error2, docs) {
+            if(error2) {
+              response.send('<!DOCTYPE HTML><html><head>' +
+              '<title>ALL YO DATA</title>' +
+              '</head><body>' +
+              '<h1>Whoops, something went terribly wrong!</h1>'
+              + '</body></html>');
+            } else {
+              indexPage += '<!DOCTYPE HTML><html><head>' +
+              '<title>ALL YO DATA</title>' +
+              '</head><body>' +
+              '<h1>Restaurants</h1>';
+              for (var count = 0; count < docs.length; count++) {
+                indexPage += "<p>" + docs[count].restid + 
+                  ' named ' + docs[count].name +
+                  ' at latititude ' + docs[count].lat +
+                  ' and longitute ' + docs[count].lng +
+                  ' serves ' + docs[count].foodtype +
+                  ' find them here: ' + docs[count].website
+                  '</p>';
+              }
+              indexPage += '</body></html>';
+              response.send(indexPage);
+            }
+          });
+    });
+})
 
 app.listen(app.get('port'), function() {
   console.log("NOEA app is running at localhost:" + app.get('port'));
