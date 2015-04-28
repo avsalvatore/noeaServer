@@ -6,6 +6,12 @@ var app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 var mongoUri = process.env.MONGOLAB_URI || process.env.MONGOHQ_URL || 'mongodb://localhost/nodemongoexample';
 var MongoClient = require('mongodb').MongoClient, format = require('util').format;
 var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
@@ -153,7 +159,7 @@ app.get('/', function(request, response) {
               '</head><body>' +
               '<h1>Restaurants</h1>';
               for (var count = 0; count < docs.length; count++) {
-                indexPage += "<p>" + docs[count].restid + 
+                indexPage += "<p>" + docs[count]._tid + 
                   ' named ' + docs[count].restname +
                   ' at zip ' + docs[count].zip +
                   ' serves ' + docs[count].foodtype +
