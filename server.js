@@ -18,7 +18,7 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
-app.set('port', (process.env.PORT || 5000));
+
 
 //restaurants in DB only required to have name and zip
 app.post('/addrestaurant', function(request, response) {
@@ -90,7 +90,6 @@ app.post('/addrestaurant', function(request, response) {
 app.get('/findRestaurants', function(request, response) {
 	  response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
-	  response.set('Content-Type', 'text/html');
 
 	var myZip = request.query.zip;
 
@@ -175,6 +174,8 @@ app.get('/', function(request, response) {
           });
     });
 })
+
+app.set('port', (process.env.PORT || 5000));
 
 app.listen(app.get('port'), function() {
   console.log("NOEA app is running at localhost:" + app.get('port'));
