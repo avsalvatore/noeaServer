@@ -12,6 +12,7 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
+app.set('port', (process.env.PORT || 5000));
 //finds restaurants within a certain lat/lng range of given range
 app.get('/findRestaurants', function(request, response) {
 	  response.header("Access-Control-Allow-Origin", "*");
