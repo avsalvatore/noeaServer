@@ -49,7 +49,7 @@ app.post('/addrestaurant', function(request, response) {
                         if (error2) {
                           response.send(400);
                         } else {
-                          result.find({}).toArray(
+                          coll.find({}).toArray(
                             function (error3, docs) {
                               if (error3) {
                                 response.send(400);
@@ -64,7 +64,7 @@ app.post('/addrestaurant', function(request, response) {
                 if (error4) {
                   response.send(400);
                 } else {
-                  result.find({}).toArray(function (error3, docs) {
+                  coll.find({}).toArray(function (error3, docs) {
                     if (error3) {
                       response.send(400);
                     } else {
