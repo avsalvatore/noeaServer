@@ -39,7 +39,6 @@ app.get('/findRestaurants', function(request, response) {
   					} else {
   						response.send({});
   					}
-				});
 			});
 		}
 	});
