@@ -14,23 +14,24 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 
 app.set('port', (process.env.PORT || 5000));
 
+//restaurants in DB only required to have name and zip
 app.post('/addrestaurant', function(request, response) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-    var name = request.body.name;
+    var name = request.body.restname;
     var zip = request.body.zip;
     var foodtype = request.body.foodtype;
     var website = request.body.website;
 
     var toInsert = {
-      "name": name, 
+      "name": restname, 
       "zip": zip, 
       "foodtype": foodtype, 
       "website": website,
     };
     //should CLEAN UP data MORE to MAKE more SECURE
-    if (name == null || zip == null) {
+    if (restname == null || zip == null) {
       response.send({"error": "Whoops, something is wrong with your data!"});
     }
 
@@ -38,11 +39,11 @@ app.post('/addrestaurant', function(request, response) {
       if (error) {
         response.send(400);
       } else {
-        coll.find({"name": name, "zip": zip}).toArray(function (error1, coll) {
+        coll.find({"name": restname, "zip": zip}).toArray(function (error1, coll) {
             if (error1) {
               response.send(400);
             } else if (docs.length > 0) {
-                coll.update({"name": name, "zip":zip}, {$set: {"foodtype": foodtype, 
+                coll.update({"name": restname, "zip":zip}, {$set: {"foodtype": foodtype, 
                       "website": website}}, 
                       function (error2, result) {
                         if (error2) {
@@ -153,7 +154,7 @@ app.get('/', function(request, response) {
               '<h1>Restaurants</h1>';
               for (var count = 0; count < docs.length; count++) {
                 indexPage += "<p>" + docs[count].restid + 
-                  ' named ' + docs[count].name +
+                  ' named ' + docs[count].restname +
                   ' at zip ' + docs[count].zip +
                   ' serves ' + docs[count].foodtype +
                   ' find them here: ' + docs[count].website
