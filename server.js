@@ -39,10 +39,10 @@ app.post('/addrestaurant', function(request, response) {
       if (error) {
         response.send(400);
       } else {
-        coll.find({"name": restname, "zip": zip}).toArray(function (error1, coll) {
+        coll.find({"name": restname, "zip": zip}).toArray(function (error1, data) {
             if (error1) {
               response.send(400);
-            } else if (docs.length > 0) {
+            } else if (data.length > 0) {
                 coll.update({"name": restname, "zip":zip}, {$set: {"foodtype": foodtype, 
                       "website": website}}, 
                       function (error2, result) {
