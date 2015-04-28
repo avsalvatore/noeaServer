@@ -30,7 +30,7 @@ app.get('/findRestaurants', function(request, response) {
 		if (err) {
 			response.send({});
 		} else {
-			coll.find({lat: {$gt: llat, $lt: ulat}, lng: {$gt: llng, $lt ulng}}).toArray(
+			coll.find({lat: {$gt: llat, $lt: ulat}, lng: {$gt: llng, $lt: ulng}}).toArray(
   				function(error2, docs) {
   					if (error2) {
   						response.send({});
