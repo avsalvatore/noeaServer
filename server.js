@@ -19,13 +19,13 @@ app.post('/addrestaurant', function(request, response) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-    var name = request.body.restname;
+    var restname = request.body.restname;
     var zip = request.body.zip;
     var foodtype = request.body.foodtype;
     var website = request.body.website;
 
     var toInsert = {
-      "name": restname, 
+      "restname": restname, 
       "zip": zip, 
       "foodtype": foodtype, 
       "website": website,
@@ -39,11 +39,11 @@ app.post('/addrestaurant', function(request, response) {
       if (error) {
         response.send(400);
       } else {
-        coll.find({"name": restname, "zip": zip}).toArray(function (error1, data) {
+        coll.find({"restname": restname, "zip": zip}).toArray(function (error1, data) {
             if (error1) {
               response.send(400);
             } else if (data.length > 0) {
-                coll.update({"name": restname, "zip":zip}, {$set: {"foodtype": foodtype, 
+                coll.update({"restname": restname, "zip":zip}, {$set: {"foodtype": foodtype, 
                       "website": website}}, 
                       function (error2, result) {
                         if (error2) {
