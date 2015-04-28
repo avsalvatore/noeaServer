@@ -13,25 +13,85 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 });
 
 app.set('port', (process.env.PORT || 5000));
+
+app.post('/addrestaurant', function(request, response) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+    var name = request.body.name;
+    var zip = request.body.zip;
+    var foodtype = request.body.foodtype;
+    var website = request.body.website;
+
+    var toInsert = {
+      "name": name, 
+      "zip": zip, 
+      "foodtype": foodtype, 
+      "website": website,
+    };
+    //should CLEAN UP data MORE to MAKE more SECURE
+    if (name == null || zip == null) {
+      response.send({"error": "Whoops, something is wrong with your data!"});
+    }
+
+    db.collection('restaurants', function(error, coll) {
+      if (error) {
+        response.send(400);
+      } else {
+        coll.find({"name": name, "zip": zip}).toArray(function (error1, coll) {
+            if (error1) {
+              response.send(400);
+            } else if (docs.length > 0) {
+                coll.update({"name": name, "zip":zip}, {$set: {"foodtype": foodtype, 
+                      "website": website}}, 
+                      function (error2, result) {
+                        if (error2) {
+                          response.send(400);
+                        } else {
+                          result.find({}).toArray(
+                            function (error3, docs) {
+                              if (error3) {
+                                response.send(400);
+                              } else {
+                                response.send(docs);
+                              }
+                            });
+                        }
+                      });
+            } else {
+              coll.insert(toInsert, function(error4, result) {
+                if (error4) {
+                  response.send(400);
+                } else {
+                  result.find({}).toArray(function (error3, docs) {
+                    if (error3) {
+                      response.send(400);
+                    } else {
+                      response.send(docs);
+                    }
+                  });
+                }
+              });
+            }
+        });
+      }
+    });
+
+
+})
 //finds restaurants within a certain lat/lng range of given range
 app.get('/findRestaurants', function(request, response) {
 	  response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
 	  response.set('Content-Type', 'text/html');
 
-	var mylat = request.query.mylat;
-	var mylng = request.query.mylng;
-	var range = reuqest.query.range / 2;
-  var llat = mylat - range;
-  var ulat = mylat +range;
-  var llng = mylng - range;
-  var ulng = mylng + range; 
-
+	var myZip = response.body.zip;
+///change to zipppp
 	db.collection('restaurants', function (err, coll) {
 		if (err) {
 			response.send({});
 		} else {
-			coll.find({lat: {$gt: llat, $lt: ulat}, lng: {$gt: llng, $lt: ulng}}).toArray(
+			coll.find({'zip': myZip}).toArray(
   				function(error2, docs) {
   					if (error2) {
   						response.send({});
@@ -46,7 +106,8 @@ app.get('/findRestaurants', function(request, response) {
 });
 
 //finds past and future 'NOEAs' based on login id
-app.get('/findnoas', function(request, response){
+//change this to pull guest noes too!!!!
+app.get('/findnoeas', function(request, response){
 	response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
   	var login = request.query.login;
