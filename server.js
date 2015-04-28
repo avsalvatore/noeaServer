@@ -21,12 +21,16 @@ app.get('/findRestaurants', function(request, response) {
 	var mylat = request.query.mylat;
 	var mylng = request.query.mylng;
 	var range = reuqest.query.range / 2;
+  var llat = mylat - range;
+  var ulat = mylat +range;
+  var llng = mylng - range;
+  var ulng = mylng + range; 
 
 	db.collection('restaurants', function (err, coll) {
 		if (err) {
 			response.send({});
 		} else {
-			coll.find({lat: {$gt: mylat - range, $lt: mylat - range}, lng: {$gt: mylng - range, mylng + range}}).toArray(
+			coll.find({lat: {$gt: llat, $lt: ulat}, lng: {$gt: llng, ulng}}).toArray(
   				function(error2, docs) {
   					if (error2) {
   						response.send({});
