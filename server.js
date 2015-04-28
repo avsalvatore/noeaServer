@@ -154,8 +154,7 @@ app.get('/', function(request, response) {
               for (var count = 0; count < docs.length; count++) {
                 indexPage += "<p>" + docs[count].restid + 
                   ' named ' + docs[count].name +
-                  ' at latititude ' + docs[count].lat +
-                  ' and longitute ' + docs[count].lng +
+                  ' at zip ' + docs[count].zip +
                   ' serves ' + docs[count].foodtype +
                   ' find them here: ' + docs[count].website
                   '</p>';
