@@ -93,23 +93,26 @@ app.get('/findRestaurants', function(request, response) {
 	  response.set('Content-Type', 'text/html');
 
 	var myZip = request.query.zip;
-///change to zipppp
-	db.collection('restaurants', function (err, coll) {
-		if (err) {
-			response.send({});
-		} else {
-			coll.find({'zip': myZip}).toArray(
-  				function(error2, docs) {
-  					if (error2) {
-  						response.send({});
-  					} else if (docs.length > 0) {
-  						response.send(docs);
-  					} else {
-  						response.send({});
-  					}
-			});
-		}
-	});
+
+  if (myZip == null) {
+    response.send({});
+  } else {
+	   db.collection('restaurants', function (err, coll) {
+		    if (err) {
+			     response.send(400);
+		    } else {
+			     coll.find({'zip': myZip}).toArray(function(error2, docs) {
+  					   if (error2) {
+  						    response.send(400);
+  					   } else if (docs.length > 0) {
+  						    response.send(docs);
+  					   } else {
+  						    response.send(400);
+  					   }
+			     });
+		    }
+	   });
+  }
 });
 
 //finds past and future 'NOEAs' based on login id
