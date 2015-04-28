@@ -92,7 +92,7 @@ app.get('/findRestaurants', function(request, response) {
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
 	  response.set('Content-Type', 'text/html');
 
-	var myZip = response.body.zip;
+	var myZip = request.query.zip;
 ///change to zipppp
 	db.collection('restaurants', function (err, coll) {
 		if (err) {
