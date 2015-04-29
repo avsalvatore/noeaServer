@@ -93,8 +93,6 @@ app.post('/addrestaurant', function(request, response) {
         });
       }
     });
-
-
 })
 //finds restaurants within a certain lat/lng range of given range
 app.get('/findRestaurants', function(request, response) {
@@ -152,18 +150,76 @@ app.get('/findRest', function(request, response){
         });
     }    
 });
+
+app.post('/addnoea', function(request, response) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+    var user_id = request.body.user_id;     //host of event
+    var restname = request.body.restname;   //place
+    var zip = request.body.zip;           
+    var date = request.body.date;           
+    var timeofrez = request.body.timeofrez; 
+    var guests = request.body.guests;       //JSON array of guest ids
+    var type = requests.body.type; 
+
+    var toInsert = {
+      "user_id": user_id,  
+      "restname": restname
+      "zip":zip, 
+      "date": date,
+      "timeofrez": timeofrez,
+      "guests": guests,
+      "type": type,
+    };
+    //should CLEAN UP data MORE to MAKE more SECURE
+    if (user_id ==null || restname == null || zip == null
+        || date == null || time == null) {
+      response.send({"error": "Whoops, you must fill all fields"});
+      return;
+    }
+
+    db.collection('noeas', function(error, coll) {
+      if (error) {
+        response.send(400);
+      } else {
+        //no two noeas on same date
+        coll.find({"user_id": user_id, "date": date}).toArray(function (error1, data) {
+            if (error1) {
+              response.send(400);
+            } else if (data.length > 0) {
+                response.send({"error": "Whoops looks like you already have a NOEA for that date!"});
+            } else {
+              coll.insert(toInsert, function(error4, result) {
+                if (error4) {
+                  response.send(400);
+                } else {
+                  coll.find({}).toArray(function (error3, docs) {
+                    if (error3) {
+                      response.send(400);
+                    } else {
+                      response.send(docs);
+                    }
+                  });
+                }
+              });
+            }
+        });
+      }
+    });
+})
 //finds past and future 'NOEAs' based on login id
-//change this to pull guest noes too!!!!
+//change this to pull guest noeas too!!!!
 app.get('/findnoeas', function(request, response){
 	response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
-  	var login = request.query.login;
+  	var user_id = request.query.user_id;
   
-  	if (login == null) {
+  	if (user_id == null) {
   		response.send({});
   	} else {
   		db.collection('noeas', function(error1, coll) {
-  			coll.find({'user_id': login}).toArray(
+  			coll.find({'user_id': user_id}).toArray(
   				function(error2, docs) {
   					if (error2) {
   						response.send({});
@@ -182,6 +238,7 @@ app.get('/', function(request, response) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
     response.set('Content-Type', 'text/html');
+
     var indexPage = "";
 
     db.collection('restaurants', function (error, coll) {
@@ -212,6 +269,8 @@ app.get('/', function(request, response) {
           });
     });
 })
+
+
 
 app.set('port', (process.env.PORT || 5000));
 
