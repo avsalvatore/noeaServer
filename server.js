@@ -36,7 +36,7 @@ app.post('/addrestaurant', function(request, response) {
     var zip = request.body.zip;
     var foodtype = request.body.foodtype;
     var website = request.body.website;
-    var bio = request.body.website;
+    var bio = request.body.bio;
 
     var toInsert = {
       "restname": restname, 
