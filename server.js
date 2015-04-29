@@ -165,7 +165,7 @@ app.post('/addnoea', function(request, response) {
 
     var toInsert = {
       "user_id": user_id,  
-      "restname": restname
+      "restname": restname,
       "zip":zip, 
       "date": date,
       "timeofrez": timeofrez,
