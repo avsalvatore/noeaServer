@@ -18,7 +18,14 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
+// app.post('/deleterestaurant', function (request, response) {
+//     response.header("Access-Control-Allow-Origin", "*");
+//     response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
+//     var zip = request.body.zip;
+
+//     var  toDel = {"zip": zip};
+// });
 
 //restaurants in DB only required to have name and zip
 app.post('/addrestaurant', function(request, response) {
@@ -39,6 +46,7 @@ app.post('/addrestaurant', function(request, response) {
     //should CLEAN UP data MORE to MAKE more SECURE
     if (restname == null || zip == null) {
       response.send({"error": "Whoops, something is wrong with your data!"});
+      return;
     }
 
     db.collection('restaurants', function(error, coll) {
@@ -114,6 +122,34 @@ app.get('/findRestaurants', function(request, response) {
   }
 });
 
+app.get('/findRest', function(request, response){
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");  
+
+    var myZip = request.query.zip;
+    var restname = request.query.restname;
+
+    if (myZip == null || restname == null) {
+        response.send(null);
+    } else {
+        db.collection('restaurants', function (err, coll) {
+            if (err) {
+                response.sendStatus(400);
+            } else {
+                coll.find({'restname': restname,'zip': myZip}).toArray(
+                  function(error2, docs) {
+                    if (error2) {
+                        response.sendStatus(400);
+                    } else if (docs.length > 0) {
+                        response.send(docs);
+                    } else {
+                        response.sendStatus(402);
+                    }
+                });
+            }
+        });
+    }    
+});
 //finds past and future 'NOEAs' based on login id
 //change this to pull guest noes too!!!!
 app.get('/findnoeas', function(request, response){
