@@ -36,12 +36,14 @@ app.post('/addrestaurant', function(request, response) {
     var zip = request.body.zip;
     var foodtype = request.body.foodtype;
     var website = request.body.website;
+    var bio = request.body.website;
 
     var toInsert = {
       "restname": restname, 
       "zip": zip, 
       "foodtype": foodtype, 
       "website": website,
+      "bio": bio,
     };
     //should CLEAN UP data MORE to MAKE more SECURE
     if (restname == null || zip == null) {
@@ -58,7 +60,7 @@ app.post('/addrestaurant', function(request, response) {
               response.send(400);
             } else if (data.length > 0) {
                 coll.update({"restname": restname, "zip":zip}, {$set: {"foodtype": foodtype, 
-                      "website": website}}, 
+                      "website": website, "bio": bio}}, 
                       function (error2, result) {
                         if (error2) {
                           response.send(400);
