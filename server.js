@@ -98,15 +98,15 @@ app.get('/findRestaurants', function(request, response) {
   } else {
 	   db.collection('restaurants', function (err, coll) {
 		    if (err) {
-			     response.send(400);
+			     response.sendStatus(400);
 		    } else {
 			     coll.find({'zip': myZip}).toArray(function(error2, docs) {
   					   if (error2) {
-  						    response.send(400);
+  						    response.sendStatus(400);
   					   } else if (docs.length > 0) {
   						    response.send(docs);
   					   } else {
-  						    response.send(400);
+  						    response.sendStatus(402);
   					   }
 			     });
 		    }
