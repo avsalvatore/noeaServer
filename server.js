@@ -94,7 +94,7 @@ app.get('/findRestaurants', function(request, response) {
 	var myZip = request.query.zip;
 
   if (myZip == null) {
-    response.send({[]});
+    response.send(null);
   } else {
 	   db.collection('restaurants', function (err, coll) {
 		    if (err) {
