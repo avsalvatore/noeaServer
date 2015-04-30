@@ -151,6 +151,98 @@ app.get('/findRest', function(request, response){
     }    
 });
 
+app.post('/adduser', function(request, response) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");
+
+    var user = request.body.user_id;
+    var name = request.body.name;
+    var about = request.body.about;
+    var dob = request.body.dob; 
+    var email = request.body.email;
+    var favfood = request.body.favfood;
+
+    var toInsert = {
+      "user_id": user_id,
+      "name" : name,
+      "about": about, 
+      "dob": dob,
+      "email": email,
+      "favfood" : favfood,
+    };
+    //should CLEAN UP data MORE to MAKE more SECURE
+    if (user_id == null || name == null) {
+      response.send({"error": "Whoops, something is wrong with your data!"});
+      return;
+    }
+
+    db.collection('users', function(error, coll) {
+      if (error) {
+        response.send(400);
+      } else {
+        coll.find({"user_id": user_id}).toArray(function (error1, data) {
+            if (error1) {
+              response.send(400);
+            } else if (data.length > 0) {
+                coll.update({"user_id": user_id}, {$set: {"name": name, 
+                      "about": about, "dob": dob, "email":email, "favfood": favfood}}, 
+                      function (error2, result) {
+                        if (error2) {
+                          response.send(400);
+                        } else {
+                          coll.find({}).toArray(
+                            function (error3, docs) {
+                              if (error3) {
+                                response.send(400);
+                              } else {
+                                response.send(docs);
+                              }
+                            });
+                        }
+                      });
+            } else {
+              coll.insert(toInsert, function(error4, result) {
+                if (error4) {
+                  response.send(400);
+                } else {
+                  coll.find({}).toArray(function (error3, docs) {
+                    if (error3) {
+                      response.send(400);
+                    } else {
+                      response.send(docs);
+                    }
+                  });
+                }
+              });
+            }
+        });
+      }
+    });
+});
+
+app.get('/finduser', function(request,response) {
+    response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");
+    var user_id = request.query.user_id;
+
+    if (user_id == null) {
+      response.send({});
+    } else {
+      db.collection('users', function(error1, coll) {
+        coll.find({'user_id': user_id}).toArray(
+          function(error2, docs) {
+            if (error2) {
+              response.send({});
+            } else if (docs.length > 0) {
+              response.send(docs);
+            } else {
+            response.send({});
+          }
+        });
+      });
+    }
+});
+
 app.post('/addnoea', function(request, response) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
@@ -210,6 +302,7 @@ app.post('/addnoea', function(request, response) {
 })
 //finds past and future 'NOEAs' based on login id
 //change this to pull guest noeas too!!!!
+//noea.herokuapp.com/findnoeas
 app.get('/findnoeas', function(request, response){
 	response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
