@@ -253,7 +253,7 @@ app.post('/addnoea', function(request, response) {
     var date = request.body.date;           
     var timeofrez = request.body.timeofrez; 
     var guests = request.body.guests;       //JSON array of guest ids
-    var type = requests.body.typeinvite; 
+    var type = request.body.typeinvite; 
 
     var toInsert = {
       "user_id": user_id,  
