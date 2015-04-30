@@ -155,8 +155,8 @@ app.post('/adduser', function(request, response) {
     response.header("Access-Control-Allow-Origin", "*");
     response.header("Access-Control-Allow-Headers", "X-Requested-With");
 
-    var user = request.body.user_id;
-    var name = request.body.name;
+    var user_id = request.body.user_id;
+    var name = request.body.username;
     var about = request.body.about;
     var dob = request.body.dob; 
     var email = request.body.email;
@@ -253,7 +253,7 @@ app.post('/addnoea', function(request, response) {
     var date = request.body.date;           
     var timeofrez = request.body.timeofrez; 
     var guests = request.body.guests;       //JSON array of guest ids
-    var type = requests.body.type; 
+    var type = requests.body.typeinvite; 
 
     var toInsert = {
       "user_id": user_id,  
@@ -266,7 +266,7 @@ app.post('/addnoea', function(request, response) {
     };
     //should CLEAN UP data MORE to MAKE more SECURE
     if (user_id ==null || restname == null || zip == null
-        || date == null || time == null) {
+        || date == null || timeofrez == null) {
       response.send({"error": "Whoops, you must fill all fields"});
       return;
     }
