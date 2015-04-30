@@ -349,10 +349,11 @@ app.get('/', function(request, response) {
               '</head><body>' +
               '<h1>Restaurants</h1>';
               for (var count = 0; count < docs.length; count++) {
-                indexPage += "<p>" + docs[count]._tid + 
+                indexPage += "<p>" + docs[count]._id+ 
                   ' named ' + docs[count].restname +
                   ' at zip ' + docs[count].zip +
                   ' serves ' + docs[count].foodtype +
+                  'has bio: ' + docs[count].bio +
                   ' find them here: ' + docs[count].website
                   '</p>';
               }
