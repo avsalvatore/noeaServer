@@ -18,15 +18,6 @@ var db = MongoClient.connect(mongoUri, function(error, databaseConnection) {
 	db = databaseConnection;
 });
 
-// app.post('/deleterestaurant', function (request, response) {
-//     response.header("Access-Control-Allow-Origin", "*");
-//     response.header("Access-Control-Allow-Headers", "X-Requested-With");
-
-//     var zip = request.body.zip;
-
-//     var  toDel = {"zip": zip};
-// });
-
 //restaurants in DB only required to have name and zip
 app.post('/addrestaurant', function(request, response) {
     response.header("Access-Control-Allow-Origin", "*");
@@ -325,6 +316,30 @@ app.get('/findnoeas', function(request, response){
   			});
   		});
   	}
+});
+
+app.get('/findnoeasfromrest', function(request, response){
+  response.header("Access-Control-Allow-Origin", "*");
+    response.header("Access-Control-Allow-Headers", "X-Requested-With");
+    var restname = request.query.restname;
+    var zip = request.query.zip;
+  
+    if (restname == null && zip == null) {
+      response.send({});
+    } else {
+      db.collection('noeas', function(error1, coll) {
+        coll.find({'restname': restname, 'zip': zip}).toArray(
+          function(error2, docs) {
+            if (error2) {
+              response.send({});
+            } else if (docs.length > 0) {
+              response.send(docs);
+            } else {
+            response.send({});
+          }
+        });
+      });
+    }
 });
 
 
