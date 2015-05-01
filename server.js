@@ -35,7 +35,6 @@ app.post('/addrestaurant', function(request, response) {
       "foodtype": foodtype, 
       "website": website,
       "bio": bio,
-      "four_id": four_id,
     };
     //should CLEAN UP data MORE to MAKE more SECURE
     if (restname == null || zip == null) {
@@ -52,7 +51,7 @@ app.post('/addrestaurant', function(request, response) {
               response.send(400);
             } else if (data.length > 0) {
                 coll.update({"restname": restname, "zip":zip}, {$set: {"foodtype": foodtype, 
-                      "website": website, "bio": bio, "four_id": four_id}}, 
+                      "website": website, "bio": bio}}, 
                       function (error2, result) {
                         if (error2) {
                           response.send(400);
